@@ -6,6 +6,7 @@
     <title>NEXUS — Premium Tech Publication</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
@@ -44,7 +45,7 @@
         .btn-secondary { background: #fff; color: #0f1115; font-size: 13px; font-weight: 600; padding: 14px 30px; border-radius: 28px; border: 1.5px solid #E5E7EB; text-decoration: none; transition: border-color 0.2s; }
         .btn-secondary:hover { border-color: var(--indigo); }
         .hero-img-wrap { position: relative; }
-        .hero-img { width: 100%; height: 600px; border-radius: 22px; background-size: cover; background-position: center; box-shadow: 0 24px 70px rgba(79,70,229,0.18); }
+        .hero-img { width: 100%; height: 440px; border-radius: 22px; background-size: cover; background-position: center; box-shadow: 0 24px 70px rgba(79,70,229,0.18); }
         .hero-badge { position: absolute; bottom: -18px; left: -18px; background: #fff; border-radius: 18px; padding: 16px 20px; box-shadow: 0 14px 40px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 14px; }
         .hero-badge-ic { width: 42px; height: 42px; background: #EEF0FF; border-radius: 13px; display: flex; align-items: center; justify-content: center; color: var(--indigo); font-size: 19px; }
         .hero-badge-n { font-size: 19px; font-weight: 800; color: #0f1115; }
@@ -52,10 +53,20 @@
 
         /* TRUST */
         .trust { background: #F9FAFB; padding: 32px var(--pad); text-align: center; }
-        .trust-label { font-size: 11px; color: #999; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 20px; }
+        .trust-label { font-size: 15px; color: #999; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 20px; }
         .trust-cats { display: flex; justify-content: center; gap: 44px; flex-wrap: wrap; }
         .trust-cat { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #9CA3AF; }
         .trust-cat i { font-size: 18px; color: var(--indigo); }
+
+        /* ANIMATED STATS */
+        .stats-band { padding-bottom: 50px; padding-top: 80px; background: #fff; position: relative; z-index: 5; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; max-width: 900px; margin: 0 auto; align-items: stretch; }
+        .stat-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px 16px; border-radius: 20px; background: #F9FAFB; border: 1px solid #F3F4F6; transition: transform 0.3s, box-shadow 0.3s; min-height: 150px; }
+        .stat-box:hover { transform: translateY(-5px); box-shadow: 0 12px 36px rgba(79,70,229,0.1); }
+        .stat-value { display: flex; align-items: baseline; justify-content: center; gap: 2px; margin-bottom: 12px; }
+        .stat-num { font-size: 44px; font-weight: 800; color: var(--indigo); letter-spacing: -1.5px; line-height: 1; }
+        .stat-plus { font-size: 32px; font-weight: 800; color: var(--indigo); line-height: 1; }
+        .stat-label { font-size: 12px; color: #888; font-weight: 500; letter-spacing: 0.3px; }
 
         /* SECTION */
         .sec { padding: 64px var(--pad); position: relative; z-index: 5; }
@@ -67,7 +78,7 @@
         .stories-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 26px; }
         .story { background: #fff; border-radius: 20px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #F3F4F6; opacity: 0; }
         .story:hover { box-shadow: 0 16px 50px rgba(79,70,229,0.14); }
-        .story-img { height: 350px; background-size: cover; background-position: center; position: relative; overflow: hidden; }
+        .story-img { height: 220px; background-size: cover; background-position: center; position: relative; overflow: hidden; }
         .story-cat { position: absolute; top: 16px; left: 16px; background: #fff; color: var(--indigo); font-size: 10px; font-weight: 700; padding: 6px 13px; border-radius: 20px; z-index: 2; }
         .story-body { padding: 22px; }
         .story-title { font-size: 17px; font-weight: 700; line-height: 1.35; margin-bottom: 12px; letter-spacing: -0.3px; }
@@ -84,14 +95,14 @@
         .feature-item { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #fff; }
         .feature-item i { width: 24px; height: 24px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
         .feature-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; position: relative; }
-        .feature-img { height: 250px; border-radius: 16px; background-size: cover; background-position: center; }
+        .feature-img { height: 160px; border-radius: 16px; background-size: cover; background-position: center; }
 
         /* TRENDING */
         .trend-list { display: flex; flex-direction: column; gap: 14px; max-width: 820px; margin: 0 auto; }
         .trend-row { display: flex; align-items: center; gap: 22px; padding: 18px; border-radius: 18px; cursor: pointer; border: 1px solid #F3F4F6; opacity: 0; transition: background 0.2s; }
         .trend-row:hover { background: #F9FAFB; }
         .trend-num { font-size: 26px; font-weight: 800; color: #E5E7EB; min-width: 40px; }
-        .trend-img { width: 250px; height: 150px; border-radius: 14px; background-size: cover; background-position: center; flex-shrink: 0; }
+        .trend-img { width: 120px; height: 80px; border-radius: 14px; background-size: cover; background-position: center; flex-shrink: 0; }
         .trend-content { flex: 1; }
         .trend-cat { font-size: 10px; color: var(--indigo); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
         .trend-title { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
@@ -156,6 +167,8 @@
             :root { --pad: 20px; }
             .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px 48px; }
             .hero-title { font-size: 36px; letter-spacing: -1px; }
+            .hero-img { height: 280px; }
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
             .stories-grid { grid-template-columns: 1fr; }
             .sec-title { font-size: 26px; }
             .feature { grid-template-columns: 1fr; padding: 32px; margin: 0 20px 48px; }
@@ -229,6 +242,29 @@
     </div>
 </div>
 
+{{-- ANIMATED STATS --}}
+<section class="stats-band" id="stats-band">
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-value"><span class="stat-num" data-count="128">0</span><span class="stat-plus">+</span></div>
+            <div class="stat-label">Articles Published</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value"><span class="stat-num" data-count="24">0</span><span class="stat-plus">K</span></div>
+            <div class="stat-label">Monthly Readers</div>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat-value"><span class="stat-num" data-count="{{ $categories->count() }}">0</span></div>
+            <div class="stat-label">Categories</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value"><span class="stat-num" data-count="98">0</span><span class="stat-plus">%</span></div>
+            <div class="stat-label">Reader Satisfaction</div>
+        </div>
+    </div>
+</section>
+
 {{-- LATEST STORIES --}}
 <section class="sec" id="stories-sec">
     <div class="sec-head">
@@ -277,7 +313,7 @@
         </div>
     </div>
     <div class="feature-imgs">
-        <div class="feature-img" style="grid-column:span 2;height:160px;background-image:url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=80');"></div>
+        <div class="feature-img" style="grid-column:span 2;height:220px;background-image:url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=80');"></div>
         <div class="feature-img" style="background-image:url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80');"></div>
         <div class="feature-img" style="background-image:url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80');"></div>
     </div>
@@ -430,8 +466,6 @@
     </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css" rel="stylesheet">
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
@@ -449,6 +483,25 @@ gsap.from('.hero-badge', { opacity: 0, scale: 0.8, duration: 0.6, ease: 'back.ou
 // Trust bar
 gsap.from('.trust-cat', { opacity: 0, y: 15, duration: 0.5, stagger: 0.08, ease: 'power2.out',
     scrollTrigger: { trigger: '.trust', start: 'top 90%' } });
+
+// ANIMATED STATS COUNTER
+ScrollTrigger.create({
+    trigger: '#stats-band',
+    start: 'top 80%',
+    once: true,
+    onEnter: () => {
+        document.querySelectorAll('.stat-num').forEach(el => {
+            const target = parseInt(el.dataset.count);
+            gsap.to(el, {
+                innerText: target,
+                duration: 2,
+                snap: { innerText: 1 },
+                ease: 'power2.out'
+            });
+        });
+        gsap.from('.stat-box', { opacity: 0, y: 30, duration: 0.6, stagger: 0.1, ease: 'power2.out', clearProps: 'transform' });
+    }
+});
 
 // Stories
 gsap.set('.story', { opacity: 0, y: 50 });
