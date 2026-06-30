@@ -141,6 +141,23 @@
         .cat-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: #0f1115; }
         .cat-count { font-size: 12px; color: #999; }
 
+        /* ARTICLE FILTER (LIVEWIRE) */
+        .filter-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
+        .filter-btn { background: #fff; border: 1.5px solid #E5E7EB; border-radius: 26px; padding: 10px 22px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .filter-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+        .filter-btn.active { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+        .filter-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
+        .filter-card { background: #fff; border: 1px solid #F3F4F6; border-radius: 18px; padding: 26px; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s; }
+        .filter-card:hover { box-shadow: 0 12px 36px rgba(79,70,229,0.1); transform: translateY(-3px); }
+        .filter-card-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+        .filter-card-title { font-size: 17px; font-weight: 700; line-height: 1.4; letter-spacing: -0.3px; margin-bottom: 14px; color: #0f1115; }
+        .filter-card-meta { font-size: 12px; color: #999; }
+        .filter-empty { grid-column: 1 / -1; text-align: center; padding: 48px; color: #999; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .filter-grid { grid-template-columns: 1fr; }
+        }
+
         /* NEWSLETTER */
         .nl { background: #0f1115; border-radius: 28px; margin: 0 var(--pad) 64px; padding: 56px; text-align: center; position: relative; overflow: hidden; }
         .nl-blob { position: absolute; width: 360px; height: 360px; background: rgba(79,70,229,0.25); border-radius: 50%; top: -120px; left: 50%; transform: translateX(-50%); filter: blur(50px); }
@@ -418,6 +435,15 @@
         <a href="#" class="tag"><span class="tag-hash">#</span>{{ $tag->name }}<span class="tag-count">{{ $tag->posts_count }}</span></a>
         @endforeach
     </div>
+</section>
+{{-- EXPLORE ARTICLES (LIVEWIRE FILTER) --}}
+<section class="sec" id="explore-sec" style="padding-top:0;">
+    <div class="sec-head">
+        <div class="sec-eyebrow">EXPLORE</div>
+        <div class="sec-title">Browse all articles</div>
+        <div class="sec-sub">Filter by category to find exactly what interests you</div>
+    </div>
+    <livewire:article-filter />
 </section>
 @endif
 
