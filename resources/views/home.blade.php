@@ -179,6 +179,23 @@
         .btt-arrow { position: relative; z-index: 1; }dth: 3; stroke-linecap: round; stroke-dasharray: 144.5; stroke-dashoffset: 144.5; transition: stroke-dashoffset 0.1s linear; }
         .back-to-top i { position: relative; z-index: 1; }
 
+        /* NEWSLETTER POPUP */
+        .popup-overlay { position: fixed; inset: 0; background: rgba(15,17,21,0.6); backdrop-filter: blur(4px); z-index: 10001; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s; padding: 20px; }
+        .popup-overlay.show { opacity: 1; visibility: visible; }
+        .popup { background: #fff; border-radius: 28px; padding: 48px 40px; max-width: 440px; width: 100%; text-align: center; position: relative; transform: scale(0.9) translateY(20px); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 30px 80px rgba(0,0,0,0.3); }
+        .popup-overlay.show .popup { transform: scale(1) translateY(0); }
+        .popup-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border: none; background: #F3F4F6; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; transition: background 0.2s, color 0.2s; }
+        .popup-close:hover { background: #E5E7EB; color: #0f1115; }
+        .popup-icon { width: 64px; height: 64px; background: #EEF0FF; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--indigo); margin: 0 auto 22px; }
+        .popup-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; color: #0f1115; }
+        .popup-text { font-size: 14px; color: #777; line-height: 1.7; margin-bottom: 28px; }
+        .popup-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+        .popup-input { background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 26px; padding: 14px 22px; font-size: 14px; color: #0f1115; outline: none; text-align: center; transition: border-color 0.2s; }
+        .popup-input:focus { border-color: var(--indigo); }
+        .popup-btn { background: var(--indigo); color: #fff; font-size: 14px; font-weight: 600; padding: 14px; border-radius: 26px; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .popup-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(79,70,229,0.3); }
+        .popup-note { font-size: 11px; color: #aaa; }
+
         @media (max-width: 768px) {
             :root { --pad: 20px; }
             .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px 48px; }
@@ -486,6 +503,23 @@
     
 </footer>
 
+{{-- NEWSLETTER POPUP --}}
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup" id="popup">
+        <button class="popup-close" id="popupClose" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="popup-icon"><i class="ti ti-mail"></i></div>
+        <div class="popup-title">Don't miss a story</div>
+        <div class="popup-text">Join 24,000 readers getting the best tech stories delivered every morning. No spam, ever.</div>
+        <div class="popup-form">
+            <input type="email" class="popup-input" placeholder="your@email.com">
+            <button class="popup-btn">Subscribe Free →</button>
+        </div>
+        <div class="popup-note">Unsubscribe anytime. We respect your privacy.</div>
+    </div>
+</div>
+
 {{-- BACK TO TOP --}}
 <button id="backToTop" class="back-to-top" aria-label="Back to top">
     <svg class="btt-ring" width="52" height="52" viewBox="0 0 52 52">
@@ -533,6 +567,38 @@ ScrollTrigger.create({
         });
         gsap.from('.stat-box', { opacity: 0, y: 30, duration: 0.6, stagger: 0.1, ease: 'power2.out', clearProps: 'transform' });
     }
+});
+
+// NEWSLETTER POPUP
+const popupOverlay = document.getElementById('popupOverlay');
+const popupClose = document.getElementById('popupClose');
+
+function showPopup() {
+    // Only show once per browser session
+    if (!sessionStorage.getItem('nexusPopupShown')) {
+        popupOverlay.classList.add('show');
+        sessionStorage.setItem('nexusPopupShown', 'true');
+    }
+}
+
+function hidePopup() {
+    popupOverlay.classList.remove('show');
+}
+
+// Show after 5 seconds
+setTimeout(showPopup, 5000);
+
+// Close on X button
+popupClose.addEventListener('click', hidePopup);
+
+// Close when clicking the dark background
+popupOverlay.addEventListener('click', (e) => {
+    if (e.target === popupOverlay) hidePopup();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hidePopup();
 });
 
 // Stories
