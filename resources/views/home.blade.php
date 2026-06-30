@@ -10,6 +10,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
+
+        /* CURSOR SPOTLIGHT */
+        .cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; background: var(--indigo); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); }
+        .cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; border: 2px solid var(--indigo); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); opacity: 0.5; }
+        @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
         body { background: #fff; color: #0f1115; overflow-x: hidden; }
 
@@ -163,6 +169,16 @@
         .footer-legal a { font-size: 12px; color: rgba(255,255,255,0.3); text-decoration: none; }
         .footer-legal a:hover { color: var(--indigo); }
 
+        /* BACK TO TOP */
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 52px; height: 52px; border: none; background: var(--indigo); border-radius: 50%; cursor: pointer; z-index: 9998; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 8px 24px rgba(79,70,229,0.35); opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.8); transition: opacity 0.3s, visibility 0.3s, transform 0.3s, box-shadow 0.3s; }
+        .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .back-to-top:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 32px rgba(79,70,229,0.5); }
+        .btt-ring { position: absolute; top: -1px; left: -1px; transform: rotate(-90deg); pointer-events: none; }
+        .btt-ring-bg { fill: none; stroke: rgba(255,255,255,0.25); stroke-width: 2.5; }
+        .btt-ring-fill { fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 150.8; stroke-dashoffset: 150.8; transition: stroke-dashoffset 0.1s linear; }
+        .btt-arrow { position: relative; z-index: 1; }dth: 3; stroke-linecap: round; stroke-dasharray: 144.5; stroke-dashoffset: 144.5; transition: stroke-dashoffset 0.1s linear; }
+        .back-to-top i { position: relative; z-index: 1; }
+
         @media (max-width: 768px) {
             :root { --pad: 20px; }
             .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px 48px; }
@@ -188,6 +204,9 @@
     </style>
 </head>
 <body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
 <div id="progress"></div>
 <div class="blob blob1"></div>
@@ -464,7 +483,20 @@
             <a href="#">Cookies</a>
         </div>
     </div>
+    
 </footer>
+
+{{-- BACK TO TOP --}}
+<button id="backToTop" class="back-to-top" aria-label="Back to top">
+    <svg class="btt-ring" width="52" height="52" viewBox="0 0 52 52">
+        <circle class="btt-ring-bg" cx="26" cy="26" r="24" />
+        <circle class="btt-ring-fill" cx="26" cy="26" r="24" />
+    </svg>
+    <svg class="btt-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+</button>
 
 <script>
 gsap.registerPlugin(ScrollTrigger);
@@ -547,6 +579,49 @@ gsap.from('.nl', { opacity: 0, scale: 0.96, duration: 0.8, ease: 'power3.out',
 // Nav shadow
 window.addEventListener('scroll', () => {
     document.getElementById('navbar').style.boxShadow = window.scrollY > 30 ? '0 4px 30px rgba(0,0,0,0.06)' : 'none';
+});
+
+// BACK TO TOP BUTTON
+const backToTop = document.getElementById('backToTop');
+const bttFill = document.querySelector('.btt-ring-fill');
+const bttCircumference = 150.8;
+
+window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPct = scrollTop / docHeight;
+
+    // Fill the ring based on scroll progress
+    bttFill.style.strokeDashoffset = bttCircumference - (bttCircumference * scrollPct);
+
+    // Show button after scrolling 400px
+    if (scrollTop > 400) {
+        backToTop.classList.add('show');
+    } else {
+        backToTop.classList.remove('show');
+    }
+});
+
+// CUSTOM CURSOR
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+
+window.addEventListener('mousemove', (e) => {
+    // Dot follows instantly
+    gsap.set(cursorDot, { left: e.clientX, top: e.clientY });
+    // Ring trails smoothly
+    gsap.to(cursorRing, { left: e.clientX, top: e.clientY, duration: 0.4, ease: 'power2.out' });
+});
+
+// Ring grows over clickable elements
+document.querySelectorAll('a, button, .story, .cat, .trend-row, .tag').forEach(el => {
+    el.addEventListener('mouseenter', () => gsap.to(cursorRing, { scale: 1.6, opacity: 0.3, duration: 0.3 }));
+    el.addEventListener('mouseleave', () => gsap.to(cursorRing, { scale: 1, opacity: 0.5, duration: 0.3 }));
+});
+
+// Smooth scroll to top on click
+backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 </script>
 
