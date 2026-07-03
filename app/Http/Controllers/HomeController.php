@@ -51,4 +51,29 @@ class HomeController extends Controller
             'topAuthor'
         ));
     }
+
+    public function show(Post $post)
+    {
+        // Only show published posts
+        if ($post->status !== 'published') {
+            abort(404);
+        }
+
+        // Increment view count
+        $post->increment('views');
+
+        // Load relationships
+        $post->load(['user', 'category', 'tags']);
+
+        // Get related posts (same category, exclude current)
+        $relatedPosts = Post::with(['user', 'category'])
+            ->published()
+            ->where('category_id', $post->category_id)
+            ->where('id', '!=', $post->id)
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
+        return view('posts.show', compact('post', 'relatedPosts'));
+    }
 }
