@@ -148,16 +148,28 @@
         .sec-title { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; color: #0f1115; }
         .sec-sub { font-size: 14px; color: #888; margin-top: 12px; }
 
-        .stories-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 26px; }
-        .story { background: #fff; border: 1px solid #E5E7EB; overflow: hidden; opacity: 0; transition: border-color 0.2s; }
-        .story:hover { border-color: #0f1115; }
-        .story-img { height: 220px; position: relative; overflow: hidden; }
-        .story-img-bg { position: absolute; inset: 0; background-size: cover; background-position: center; will-change: transform; }
-        .story-cat { position: absolute; top: 0; left: 0; background: #fff; color: #D32F2F; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 7px 14px; z-index: 2; }
-        .story-body { padding: 20px 22px; }
-        .story-title { font-size: 17px; font-weight: 700; line-height: 1.35; margin-bottom: 12px; letter-spacing: -0.3px; }
-        .story-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #999; }
-        .story-dot { width: 3px; height: 3px; background: #ccc; border-radius: 50%; }
+        /* CATEGORY FEED — paired columns: feature category left, compact grid right */
+        .feed-cat { position: relative; z-index: 5; padding: 48px var(--pad) 8px; }
+        .feed-row { display: grid; grid-template-columns: 1fr 2.3fr; align-items: start; }
+        .feed-col-left { padding-right: 32px; border-right: 1px solid #E5E7EB; }
+        .feed-col-right { padding-left: 32px; }
+        .feed-card { display: block; text-decoration: none; opacity: 0; }
+        .feed-title { font-size: 17px; font-weight: 700; color: #0f1115; line-height: 1.4; margin-bottom: 7px; transition: color 0.15s; }
+        .feed-card:hover .feed-title { color: #D32F2F; }
+        .feed-date { font-size: 10.5px; color: #999; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+        .feed-excerpt { font-size: 13.5px; color: #555; line-height: 1.7; }
+        /* left feature column */
+        .fb-img { width: 100%; height: 250px; margin-bottom: 18px; overflow: hidden; }
+        .feed-img-bg { width: 100%; height: 100%; background-size: cover; background-position: center; will-change: transform; }
+        .fb-lead .feed-title { font-size: 19px; }
+        .fb-item { border-top: 1px solid #E5E7EB; margin-top: 20px; padding-top: 20px; }
+        /* right compact grid */
+        .fc-grid { display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 40px; }
+        .fc-item { padding: 0 24px; border-left: 1px solid #E5E7EB; }
+        .fc-item:nth-child(3n + 1) { border-left: none; padding-left: 0; }
+        .fc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 7px; }
+        .fc-top .feed-title { margin-bottom: 0; flex: 1; }
+        .fc-thumb { width: 76px; height: 52px; background-size: cover; background-position: center; flex-shrink: 0; }
 
         /* FEATURE BAND */
         .feature { background: #0f1115; margin: 0 0 56px; padding: 56px var(--pad); display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; position: relative; overflow: hidden; }
@@ -276,7 +288,12 @@
             .ticker-slash { display: none; }
             .ticker-sub { margin: 4px 20px 0 34px; }
             .stats-grid { grid-template-columns: repeat(2,1fr); }
-            .stories-grid { grid-template-columns: 1fr; }
+            .feed-row { grid-template-columns: 1fr; }
+            .feed-col-left { padding-right: 0; border-right: none; margin-bottom: 40px; }
+            .feed-col-right { padding-left: 0; }
+            .fc-grid { grid-template-columns: 1fr; row-gap: 30px; }
+            .fc-item { border-left: none !important; padding: 0 !important; }
+            .feed-cat { padding-left: 20px; padding-right: 20px; }
             .sec-title { font-size: 26px; }
             .feature { grid-template-columns: 1fr; padding: 32px; margin: 0 20px 48px; }
             .trend-img, .trend-views { display: none; }
@@ -485,40 +502,78 @@
     </div>
 </section>
 
-{{-- LATEST STORIES --}}
-<section class="sec" id="stories-sec">
-    <div class="sec-head">
-        <div class="sec-eyebrow">LATEST STORIES</div>
-        <div class="sec-title">What's happening in tech</div>
-        <div class="sec-sub">Fresh insights and breaking stories from the world of technology</div>
+{{-- CATEGORY FEED — one section per category --}}
+@php
+    $feedImgs = [
+        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80',
+        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80',
+        'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&q=80',
+        'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=500&q=80',
+        'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&q=80',
+        'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=500&q=80',
+    ];
+@endphp
+@php
+    $feedImg = fn ($p) => $p->featured_image ?: $feedImgs[($p->id - 1) % count($feedImgs)];
+@endphp
+@foreach($feedCategories->chunk(2) as $pair)
+@php $pair = $pair->values(); @endphp
+@if($pair->count() === 2)
+<section class="feed-cat feed-row" id="feed-{{ $pair[0]->id }}">
+    {{-- FEATURE COLUMN --}}
+    <div class="feed-col-left">
+        <div class="dn-head"><span class="dn-head-label">{{ $pair[0]->name }}</span></div>
+        @php $lead = $pair[0]->posts->first(); @endphp
+        <a href="{{ route('posts.show', $lead) }}" class="feed-card fb-lead">
+            <div class="fb-img"><div class="feed-img-bg" style="background-image:url('{{ $feedImg($lead) }}');"></div></div>
+            <div class="feed-title">{{ $lead->title }}</div>
+            <div class="feed-date">{{ ($lead->published_at ?? $lead->created_at)->format('F j, Y') }}</div>
+            <p class="feed-excerpt">{{ Str::limit($lead->excerpt, 220) }}</p>
+        </a>
+        @foreach($pair[0]->posts->slice(1, 2) as $post)
+        <a href="{{ route('posts.show', $post) }}" class="feed-card fb-item">
+            <div class="feed-title">{{ $post->title }}</div>
+            <div class="feed-date">{{ ($post->published_at ?? $post->created_at)->format('F j, Y') }}</div>
+            <p class="feed-excerpt">{{ Str::limit($post->excerpt, 130) }}</p>
+        </a>
+        @endforeach
     </div>
-    <div class="stories-grid">
-        @php
-            $imgs = [
-                'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80',
-                'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80',
-                'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&q=80',
-                'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=500&q=80',
-            ];
-        @endphp
-        @foreach($latestPosts->take(3) as $index => $post)
-        <div class="story">
-            <div class="story-img">
-                <div class="story-img-bg" style="background-image:url('{{ $imgs[$index % 4] }}');"></div>
-                <div class="story-cat">{{ $post->category->name ?? 'Tech' }}</div>
-            </div>
-            <div class="story-body">
-                <div class="story-title">{{ $post->title }}</div>
-                <div class="story-meta">
-                    <span>{{ $post->reading_time }} min read</span>
-                    <div class="story-dot"></div>
-                    <span>{{ number_format($post->views) }} views</span>
+    {{-- COMPACT GRID COLUMN --}}
+    <div class="feed-col-right">
+        <div class="dn-head"><span class="dn-head-label">{{ $pair[1]->name }}</span></div>
+        <div class="fc-grid">
+            @foreach($pair[1]->posts as $post)
+            <a href="{{ route('posts.show', $post) }}" class="feed-card fc-item">
+                <div class="fc-top">
+                    <div class="feed-title">{{ $post->title }}</div>
+                    <div class="fc-thumb" style="background-image:url('{{ $feedImg($post) }}');"></div>
                 </div>
-            </div>
+                <div class="feed-date">{{ ($post->published_at ?? $post->created_at)->format('F j, Y') }}</div>
+                <p class="feed-excerpt">{{ Str::limit($post->excerpt, 180) }}</p>
+            </a>
+            @endforeach
         </div>
+    </div>
+</section>
+@else
+{{-- odd category left over — full-width compact grid --}}
+<section class="feed-cat" id="feed-{{ $pair[0]->id }}">
+    <div class="dn-head"><span class="dn-head-label">{{ $pair[0]->name }}</span></div>
+    <div class="fc-grid">
+        @foreach($pair[0]->posts as $post)
+        <a href="{{ route('posts.show', $post) }}" class="feed-card fc-item">
+            <div class="fc-top">
+                <div class="feed-title">{{ $post->title }}</div>
+                <div class="fc-thumb" style="background-image:url('{{ $feedImg($post) }}');"></div>
+            </div>
+            <div class="feed-date">{{ ($post->published_at ?? $post->created_at)->format('F j, Y') }}</div>
+            <p class="feed-excerpt">{{ Str::limit($post->excerpt, 180) }}</p>
+        </a>
         @endforeach
     </div>
 </section>
+@endif
+@endforeach
 
 {{-- FEATURE BAND --}}
 <div class="feature" id="feature-sec">
@@ -748,14 +803,18 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') hidePopup();
 });
 
-// Stories
-gsap.set('.story', { opacity: 0, y: 50 });
-ScrollTrigger.create({ trigger: '#stories-sec', start: 'top 78%',
-    onEnter: () => gsap.to('.story', { opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out' }) });
+// Category feed — reveal each section's cards on scroll
+document.querySelectorAll('.feed-cat').forEach(sec => {
+    const cards = sec.querySelectorAll('.feed-card');
+    ScrollTrigger.create({ trigger: sec, start: 'top 82%',
+        onEnter: () => gsap.to(cards, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' }) });
+});
+gsap.set('.feed-card', { y: 40 });
 
-// Story image zoom on hover
-document.querySelectorAll('.story').forEach(s => {
-    const img = s.querySelector('.story-img-bg');
+// Feed image zoom on hover
+document.querySelectorAll('.feed-card').forEach(s => {
+    const img = s.querySelector('.feed-img-bg');
+    if (!img) return;
     s.addEventListener('mouseenter', () => gsap.to(img, { scale: 1.08, duration: 0.5, ease: 'power2.out' }));
     s.addEventListener('mouseleave', () => gsap.to(img, { scale: 1, duration: 0.5, ease: 'power2.out' }));
 });
@@ -818,7 +877,7 @@ window.addEventListener('mousemove', (e) => {
 });
 
 // Ring grows over clickable elements
-document.querySelectorAll('a, button, .story, .trend-row').forEach(el => {
+document.querySelectorAll('a, button, .feed-card, .trend-row').forEach(el => {
     el.addEventListener('mouseenter', () => gsap.to(cursorRing, { scale: 1.6, opacity: 0.3, duration: 0.3 }));
     el.addEventListener('mouseleave', () => gsap.to(cursorRing, { scale: 1, opacity: 0.5, duration: 0.3 }));
 });

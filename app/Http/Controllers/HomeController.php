@@ -43,13 +43,24 @@ class HomeController extends Controller
 
         $categories = Category::withCount('posts')->get();
 
+        // Feed grouped by category — each section shows that category's latest stories
+        $feedCategories = Category::withCount(['posts' => fn ($query) => $query->published()])
+            ->with(['posts' => fn ($query) => $query->published()
+                ->latest('published_at')
+                ->latest('id')
+                ->limit(6)])
+            ->get()
+            ->filter(fn ($category) => $category->posts->isNotEmpty())
+            ->values();
+
         return view('home', compact(
             'featuredPost',
             'newsItems',
             'heroPosts',
             'latestPosts',
             'trendingPosts',
-            'categories'
+            'categories',
+            'feedCategories'
         ));
     }
 
