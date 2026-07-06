@@ -171,19 +171,20 @@
         .feature-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; position: relative; }
         .feature-img { height: 160px; background-size: cover; background-position: center; }
 
-        /* TRENDING */
-        .trend-list { display: flex; flex-direction: column; max-width: 860px; margin: 0 auto; }
-        .trend-row { display: flex; align-items: center; gap: 22px; padding: 18px 6px; cursor: pointer; border-bottom: 1px solid #E5E7EB; opacity: 0; transition: background 0.2s; }
-        .trend-row:first-child { border-top: 1px solid #E5E7EB; }
-        .trend-row:hover { background: #FAFAFA; }
-        .trend-num { font-size: 24px; font-weight: 800; color: #D32F2F; min-width: 40px; }
-        .trend-img { width: 120px; height: 80px; background-size: cover; background-position: center; flex-shrink: 0; }
-        .trend-content { flex: 1; }
-        .trend-cat { font-size: 10px; color: #D32F2F; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .trend-title { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
-        .trend-views { text-align: right; }
-        .trend-views strong { display: block; font-size: 17px; font-weight: 800; color: #0f1115; }
-        .trend-views span { font-size: 11px; color: #aaa; }
+        /* SECTION HEADER — label with black bar on a hairline rule */
+        .dn-head { text-align: center; border-bottom: 1px solid #E5E7EB; margin-bottom: 36px; }
+        .dn-head-label { display: inline-block; font-size: 15px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #0f1115; padding-bottom: 12px; border-bottom: 3px solid #0f1115; margin-bottom: -1px; }
+
+        /* MOST READ THIS WEEK — divided card columns */
+        .mostread-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+        .mr-card { display: block; text-decoration: none; padding: 0 24px; border-left: 1px solid #E5E7EB; }
+        .mr-card:first-child { border-left: none; padding-left: 0; }
+        .mr-card:last-child { padding-right: 0; }
+        .mr-img { width: 100%; height: 170px; background-size: cover; background-position: center; margin-bottom: 16px; }
+        .mr-title { font-size: 16.5px; font-weight: 700; color: #0f1115; line-height: 1.35; margin-bottom: 8px; transition: color 0.15s; }
+        .mr-card:hover .mr-title { color: #D32F2F; }
+        .mr-date { font-size: 10.5px; color: #999; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+        .mr-excerpt { font-size: 13px; color: #555; line-height: 1.65; }
 
         /* AUTHOR */
         .author-card { display: flex; align-items: center; gap: 36px; max-width: 820px; margin: 0 auto; background: #fff; border: 1px solid #E5E7EB; padding: 36px; }
@@ -194,21 +195,6 @@
         .author-stats { display: flex; gap: 32px; }
         .author-stat-n { font-size: 22px; font-weight: 800; color: #0f1115; }
         .author-stat-l { font-size: 10px; color: #aaa; letter-spacing: 0.5px; text-transform: uppercase; }
-
-        /* TAGS */
-        .tags-cloud { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 780px; margin: 0 auto; }
-        .tag { background: #fff; border: 1px solid #E5E7EB; padding: 10px 18px; font-size: 12px; color: #555; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 6px; opacity: 0; transition: all 0.2s; }
-        .tag:hover { border-color: #0f1115; color: #0f1115; }
-        .tag-hash { color: #D32F2F; font-weight: 700; }
-        .tag-count { font-size: 10px; color: #bbb; }
-
-        /* CATEGORIES */
-        .cats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; max-width: 820px; margin: 0 auto; }
-        .cat { background: #fff; border: 1px solid #E5E7EB; padding: 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; text-decoration: none; opacity: 0; transition: border-color 0.2s; }
-        .cat:hover { border-color: #0f1115; }
-        .cat-ic { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 21px; color: #fff; flex-shrink: 0; }
-        .cat-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: #0f1115; }
-        .cat-count { font-size: 12px; color: #999; }
 
         /* ARTICLE FILTER (LIVEWIRE) */
         .filter-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
@@ -314,6 +300,8 @@
             .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
             .footer-legal { justify-content: center; }
             .newsbar-links { display: none; }
+            .mostread-grid { grid-template-columns: 1fr; row-gap: 32px; }
+            .mr-card { border-left: none; padding: 0; }
             .masthead { padding: 18px 20px; }
             .masthead-brand { font-size: 36px; }
             .masthead-date, .masthead-login { display: none; }
@@ -564,34 +552,6 @@
     </div>
 </div>
 
-{{-- TRENDING --}}
-<section class="sec" id="trend-sec" style="padding-top:0;">
-    <div class="sec-head">
-        <div class="sec-eyebrow">TRENDING NOW</div>
-        <div class="sec-title">Most read this week</div>
-    </div>
-    <div class="trend-list">
-        @php
-            $trendImgs = [
-                'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=300&q=80',
-                'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=300&q=80',
-                'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=300&q=80',
-            ];
-        @endphp
-        @foreach($trendingPosts as $index => $post)
-        <a href="{{ route('posts.show', $post) }}" class="trend-row" style="text-decoration:none; color:inherit;">
-            <div class="trend-num">0{{ $index + 1 }}</div>
-            <div class="trend-img" style="background-image:url('{{ $trendImgs[$index % 3] }}');"></div>
-            <div class="trend-content">
-                <div class="trend-cat">{{ $post->category->name ?? 'Tech' }}</div>
-                <div class="trend-title">{{ $post->title }}</div>
-            </div>
-            <div class="trend-views"><strong>{{ number_format($post->views / 1000, 1) }}K</strong><span>views</span></div>
-        </a>
-        @endforeach
-    </div>
-</section>
-
 {{-- AUTHOR --}}
 @if($topAuthor)
 <section class="sec" id="author-sec" style="padding-top:0;">
@@ -615,19 +575,6 @@
 </section>
 @endif
 
-{{-- TAGS --}}
-@if($popularTags->count() > 0)
-<section class="sec" id="tags-sec" style="padding-top:0;">
-    <div class="sec-head">
-        <div class="sec-eyebrow">DISCOVER</div>
-        <div class="sec-title">Popular topics</div>
-    </div>
-    <div class="tags-cloud">
-        @foreach($popularTags as $tag)
-        <a href="#" class="tag"><span class="tag-hash">#</span>{{ $tag->name }}<span class="tag-count">{{ $tag->posts_count }}</span></a>
-        @endforeach
-    </div>
-</section>
 {{-- EXPLORE ARTICLES (LIVEWIRE FILTER) --}}
 <section class="sec" id="explore-sec" style="padding-top:0;">
     <div class="sec-head">
@@ -637,25 +584,25 @@
     </div>
     <livewire:article-filter />
 </section>
-@endif
 
-{{-- CATEGORIES --}}
-<section class="sec" id="cats-sec" style="padding-top:0;">
-    <div class="sec-head">
-        <div class="sec-eyebrow">EXPLORE</div>
-        <div class="sec-title">Browse by category</div>
-    </div>
-    <div class="cats-grid">
+{{-- MOST READ THIS WEEK --}}
+<section class="sec" id="trend-sec" style="padding-top:0;">
+    <div class="dn-head"><span class="dn-head-label">Most Read This Week</span></div>
+    <div class="mostread-grid">
         @php
-            $catIcons = ['ti-brain','ti-shield','ti-rocket','ti-dna','ti-bulb','ti-leaf'];
+            $trendImgs = [
+                'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80',
+                'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&q=80',
+                'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80',
+                'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80',
+            ];
         @endphp
-        @foreach($categories as $index => $category)
-        <a href="#" class="cat">
-            <div class="cat-ic" style="background: {{ $category->color }}"><i class="ti {{ $catIcons[$index % 6] }}"></i></div>
-            <div>
-                <div class="cat-name">{{ $category->name }}</div>
-                <div class="cat-count">{{ $category->posts_count }} {{ Str::plural('story', $category->posts_count) }}</div>
-            </div>
+        @foreach($trendingPosts as $index => $post)
+        <a href="{{ route('posts.show', $post) }}" class="mr-card trend-row">
+            <div class="mr-img" style="background-image:url('{{ $trendImgs[$index % 4] }}');"></div>
+            <div class="mr-title">{{ $post->title }}</div>
+            <div class="mr-date">{{ ($post->published_at ?? $post->created_at)->format('F j, Y') }}</div>
+            <p class="mr-excerpt">{{ Str::limit($post->excerpt, 130) }}</p>
         </a>
         @endforeach
     </div>
@@ -854,23 +801,17 @@ gsap.from('.feature-item', { opacity: 0, x: -20, duration: 0.5, stagger: 0.1, ea
     scrollTrigger: { trigger: '#feature-sec', start: 'top 70%' } });
 
 // Trending rows
-gsap.set('.trend-row', { opacity: 0, x: -30 });
+gsap.set('.trend-row', { opacity: 0, y: 24 });
 ScrollTrigger.create({ trigger: '#trend-sec', start: 'top 80%',
-    onEnter: () => gsap.to('.trend-row', { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }) });
+    onEnter: () => gsap.to('.trend-row', { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }) });
 
 // Author
 gsap.from('.author-card', { opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
     scrollTrigger: { trigger: '#author-sec', start: 'top 82%' } });
 
 // Tags
-gsap.set('.tag', { opacity: 0, y: 15 });
-ScrollTrigger.create({ trigger: '#tags-sec', start: 'top 85%',
-    onEnter: () => gsap.to('.tag', { opacity: 1, y: 0, duration: 0.4, stagger: 0.04, ease: 'back.out(1.5)' }) });
 
 // Categories
-gsap.set('.cat', { opacity: 0, y: 30 });
-ScrollTrigger.create({ trigger: '#cats-sec', start: 'top 82%',
-    onEnter: () => gsap.to('.cat', { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'back.out(1.4)' }) });
 
 // Newsletter
 gsap.from('.nl', { opacity: 0, scale: 0.96, duration: 0.8, ease: 'power3.out',
@@ -914,7 +855,7 @@ window.addEventListener('mousemove', (e) => {
 });
 
 // Ring grows over clickable elements
-document.querySelectorAll('a, button, .story, .cat, .trend-row, .tag').forEach(el => {
+document.querySelectorAll('a, button, .story, .trend-row').forEach(el => {
     el.addEventListener('mouseenter', () => gsap.to(cursorRing, { scale: 1.6, opacity: 0.3, duration: 0.3 }));
     el.addEventListener('mouseleave', () => gsap.to(cursorRing, { scale: 1, opacity: 0.5, duration: 0.3 }));
 });

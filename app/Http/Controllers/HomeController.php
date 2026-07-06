@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\NewsItem;
-use App\Models\Tag;
 use App\Models\User;
 
 class HomeController extends Controller
@@ -40,16 +39,10 @@ class HomeController extends Controller
         $trendingPosts = Post::with(['user', 'category'])
             ->published()
             ->trending()
-            ->take(3)
+            ->take(4)
             ->get();
 
         $categories = Category::withCount('posts')->get();
-
-        // Popular tags — tags with most posts
-        $popularTags = Tag::withCount('posts')
-            ->orderBy('posts_count', 'desc')
-            ->take(10)
-            ->get();
 
         // Top author — user with most posts
         $topAuthor = User::withCount('posts')
@@ -63,7 +56,6 @@ class HomeController extends Controller
             'latestPosts',
             'trendingPosts',
             'categories',
-            'popularTags',
             'topAuthor'
         ));
     }
