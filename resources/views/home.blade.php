@@ -12,9 +12,12 @@
     <style>
 
         /* CURSOR SPOTLIGHT */
-        .cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; background: var(--indigo); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); }
+        .cursor-dot { position: fixed; top: 0; left: 0; width: 10px; height: 10px; background: #fff; mix-blend-mode: difference; border-radius: 50%; pointer-events: none; z-index: 10001; transform: translate(-50%, -50%); }
         .cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; border: 2px solid var(--indigo); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); opacity: 0.5; }
         @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
+
+        /* SPOTLIGHT INVERT — the dot is a difference-blend ball; text under it inverts */
+        .spot-on { color: #0f1115 !important; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
         body { background: #fff; color: #0f1115; overflow-x: hidden; }
@@ -880,6 +883,23 @@ window.addEventListener('mousemove', (e) => {
 document.querySelectorAll('a, button, .feed-card, .trend-row').forEach(el => {
     el.addEventListener('mouseenter', () => gsap.to(cursorRing, { scale: 1.6, opacity: 0.3, duration: 0.3 }));
     el.addEventListener('mouseleave', () => gsap.to(cursorRing, { scale: 1, opacity: 0.5, duration: 0.3 }));
+});
+
+// Spotlight invert — the cursor dot swells into a big difference-blend ball over
+// headings, inverting the text underneath it (ring hides while active)
+document.querySelectorAll('.feed-title, .mr-title, .paper-item-title, .paper-feature-title, .paper-mini-title, .sec-title, .dn-head-label, .feature-title, .nl-title').forEach(h => {
+    // white-on-dark headings keep their color — the blend inverts them anyway
+    const keepColor = h.classList.contains('feature-title') || h.classList.contains('nl-title') || h.classList.contains('paper-feature-title');
+    h.addEventListener('mouseenter', () => {
+        if (!keepColor) h.classList.add('spot-on');
+        gsap.to(cursorDot, { scale: 12, duration: 0.45, ease: 'power3.out' });
+        gsap.to(cursorRing, { opacity: 0, duration: 0.2 });
+    });
+    h.addEventListener('mouseleave', () => {
+        h.classList.remove('spot-on');
+        gsap.to(cursorDot, { scale: 1, duration: 0.45, ease: 'power3.out' });
+        gsap.to(cursorRing, { opacity: 0.5, duration: 0.3 });
+    });
 });
 
 // Smooth scroll to top on click
