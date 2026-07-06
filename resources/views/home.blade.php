@@ -6,7 +6,7 @@
     <title>NEXUS — Premium Tech Publication</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.44.0/tabler-icons.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
@@ -15,7 +15,7 @@
         .cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; background: var(--indigo); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); }
         .cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; border: 2px solid var(--indigo); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); opacity: 0.5; }
         @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
-        
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
         body { background: #fff; color: #0f1115; overflow-x: hidden; }
 
@@ -38,6 +38,25 @@
         .nav-login { font-size: 13px; color: #555; font-weight: 500; text-decoration: none; }
         .nav-cta { background: var(--indigo); color: #fff; font-size: 12px; font-weight: 600; padding: 11px 24px; border-radius: 26px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
         .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79,70,229,0.3); }
+
+        /* SEARCH */
+        .search-trigger { background: #F9FAFB; border: 1.5px solid #E5E7EB; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #555; transition: all 0.2s; }
+        .search-trigger:hover { border-color: var(--indigo); color: var(--indigo); }
+        .search-overlay { position: fixed; inset: 0; background: rgba(15,17,21,0.6); backdrop-filter: blur(4px); z-index: 10002; display: flex; align-items: flex-start; justify-content: center; padding: 100px 20px 20px; }
+        .search-box { background: #fff; border-radius: 20px; max-width: 560px; width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,0.3); overflow: hidden; }
+        .search-input-wrap { display: flex; align-items: center; gap: 12px; padding: 18px 22px; border-bottom: 1px solid #F3F4F6; }
+        .search-input-icon { font-size: 20px; color: #999; }
+        .search-input { flex: 1; border: none; outline: none; font-size: 16px; color: #0f1115; font-family: inherit; background: transparent; }
+        .search-input::placeholder { color: #bbb; }
+        .search-close { background: #F3F4F6; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; font-size: 15px; }
+        .search-close:hover { background: #E5E7EB; }
+        .search-results { max-height: 400px; overflow-y: auto; }
+        .search-result { display: block; padding: 16px 22px; text-decoration: none; border-bottom: 1px solid #F9FAFB; transition: background 0.15s; }
+        .search-result:hover { background: #F9FAFB; }
+        .search-result-cat { font-size: 10px; color: var(--indigo); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .search-result-title { font-size: 15px; font-weight: 700; color: #0f1115; margin-bottom: 4px; }
+        .search-result-meta { font-size: 12px; color: #999; }
+        .search-empty, .search-hint { padding: 28px 22px; text-align: center; color: #999; font-size: 14px; }
 
         /* HERO */
         .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 56px var(--pad) 72px; position: relative; z-index: 5; }
@@ -82,9 +101,10 @@
         .sec-sub { font-size: 14px; color: #888; margin-top: 12px; }
 
         .stories-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 26px; }
-        .story { background: #fff; border-radius: 20px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #F3F4F6; opacity: 0; }
+        .story { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #F3F4F6; opacity: 0; }
         .story:hover { box-shadow: 0 16px 50px rgba(79,70,229,0.14); }
-        .story-img { height: 220px; background-size: cover; background-position: center; position: relative; overflow: hidden; }
+        .story-img { height: 220px; position: relative; overflow: hidden; }
+        .story-img-bg { position: absolute; inset: 0; background-size: cover; background-position: center; will-change: transform; }
         .story-cat { position: absolute; top: 16px; left: 16px; background: #fff; color: var(--indigo); font-size: 10px; font-weight: 700; padding: 6px 13px; border-radius: 20px; z-index: 2; }
         .story-body { padding: 22px; }
         .story-title { font-size: 17px; font-weight: 700; line-height: 1.35; margin-bottom: 12px; letter-spacing: -0.3px; }
@@ -256,6 +276,7 @@
         <a href="#">About</a>
     </div>
     <div class="nav-right">
+        <livewire:search-bar />
         <a href="{{ route('login') }}" class="nav-login">Login</a>
         <a href="{{ route('register') }}" class="nav-cta">Subscribe →</a>
     </div>
@@ -269,12 +290,14 @@
         <h1 class="hero-title">Discover stories that <span>shape the future</span>.</h1>
         <p class="hero-desc">In-depth technology journalism covering AI, innovation, and the breakthroughs defining our era. Thoughtfully written for curious minds.</p>
         <div class="hero-btns">
-            <a href="#" class="btn-primary">Start Reading →</a>
+            <a href="{{ route('posts.show', $featuredPost) }}" class="btn-primary">Start Reading →</a>
             <a href="#" class="btn-secondary">About Us</a>
         </div>
     </div>
     <div class="hero-img-wrap">
-        <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=700&q=80');"></div>
+        <a href="{{ route('posts.show', $featuredPost) }}" style="display:block; text-decoration:none;">
+            <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=700&q=80');"></div>
+        </a>
         <div class="hero-badge">
             <div class="hero-badge-ic"><i class="ti ti-eye"></i></div>
             <div><div class="hero-badge-n">24K+</div><div class="hero-badge-l">Monthly readers</div></div>
@@ -306,7 +329,7 @@
             <div class="stat-value"><span class="stat-num" data-count="24">0</span><span class="stat-plus">K</span></div>
             <div class="stat-label">Monthly Readers</div>
         </div>
-        
+
         <div class="stat-box">
             <div class="stat-value"><span class="stat-num" data-count="{{ $categories->count() }}">0</span></div>
             <div class="stat-label">Categories</div>
@@ -336,7 +359,8 @@
         @endphp
         @foreach($latestPosts->take(3) as $index => $post)
         <div class="story">
-            <div class="story-img" style="background-image:url('{{ $imgs[$index % 4] }}');">
+            <div class="story-img">
+                <div class="story-img-bg" style="background-image:url('{{ $imgs[$index % 4] }}');"></div>
                 <div class="story-cat">{{ $post->category->name ?? 'Tech' }}</div>
             </div>
             <div class="story-body">
@@ -387,7 +411,7 @@
             ];
         @endphp
         @foreach($trendingPosts as $index => $post)
-        <div class="trend-row">
+        <a href="{{ route('posts.show', $post) }}" class="trend-row" style="text-decoration:none; color:inherit;">
             <div class="trend-num">0{{ $index + 1 }}</div>
             <div class="trend-img" style="background-image:url('{{ $trendImgs[$index % 3] }}');"></div>
             <div class="trend-content">
@@ -395,7 +419,7 @@
                 <div class="trend-title">{{ $post->title }}</div>
             </div>
             <div class="trend-views"><strong>{{ number_format($post->views / 1000, 1) }}K</strong><span>views</span></div>
-        </div>
+        </a>
         @endforeach
     </div>
 </section>
@@ -526,7 +550,7 @@
             <a href="#">Cookies</a>
         </div>
     </div>
-    
+
 </footer>
 
 {{-- NEWSLETTER POPUP --}}
@@ -634,7 +658,7 @@ ScrollTrigger.create({ trigger: '#stories-sec', start: 'top 78%',
 
 // Story image zoom on hover
 document.querySelectorAll('.story').forEach(s => {
-    const img = s.querySelector('.story-img');
+    const img = s.querySelector('.story-img-bg');
     s.addEventListener('mouseenter', () => gsap.to(img, { scale: 1.08, duration: 0.5, ease: 'power2.out' }));
     s.addEventListener('mouseleave', () => gsap.to(img, { scale: 1, duration: 0.5, ease: 'power2.out' }));
 });

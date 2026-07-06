@@ -14,12 +14,14 @@ class HomeController extends Controller
         $featuredPost = Post::with(['user', 'category', 'tags'])
             ->published()
             ->latest('published_at')
+            ->latest('id')
             ->first();
 
         $latestPosts = Post::with(['user', 'category'])
             ->published()
+            ->when($featuredPost, fn ($query) => $query->where('id', '!=', $featuredPost->id))
             ->latest('published_at')
-            ->skip(1)
+            ->latest('id')
             ->take(4)
             ->get();
 

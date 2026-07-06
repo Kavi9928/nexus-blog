@@ -18,7 +18,7 @@
     {{-- POSTS GRID --}}
     <div class="filter-grid">
         @forelse($posts as $post)
-            <div class="filter-card" wire:key="post-{{ $post->id }}">
+            <a href="{{ route('posts.show', $post) }}" class="filter-card" wire:key="post-{{ $post->id }}" style="text-decoration:none; display:block;">
                 <div class="filter-card-cat" style="color: {{ $post->category->color ?? '#4F46E5' }}">
                     {{ $post->category->name ?? 'Tech' }}
                 </div>
@@ -26,7 +26,7 @@
                 <div class="filter-card-meta">
                     {{ $post->reading_time }} min read · {{ number_format($post->views) }} views
                 </div>
-            </div>
+            </a>
         @empty
             <div class="filter-empty">No articles in this category yet.</div>
         @endforelse
