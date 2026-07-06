@@ -25,6 +25,13 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        $heroPosts = Post::with('category')
+            ->published()
+            ->latest('published_at')
+            ->latest('id')
+            ->take(12)
+            ->get();
+
         $trendingPosts = Post::with(['user', 'category'])
             ->published()
             ->trending()
@@ -46,6 +53,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'featuredPost',
+            'heroPosts',
             'latestPosts',
             'trendingPosts',
             'categories',

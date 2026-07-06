@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $post->title }} — NEXUS</title>
+    <title>{{ $post->title }} — Nexus Blog</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.44.0/tabler-icons.min.css" rel="stylesheet">
@@ -69,7 +69,7 @@
 <div id="progress"></div>
 
 <nav class="nav">
-    <a href="{{ route('home') }}" class="logo"><div class="logo-mark"><i class="ti ti-bolt"></i></div>Nexus</a>
+    <a href="{{ route('home') }}" class="logo"><div class="logo-mark"><i class="ti ti-bolt"></i></div>Nexus Blog</a>
     <a href="{{ route('home') }}" class="nav-back"><i class="ti ti-arrow-left"></i> Back to Home</a>
 </nav>
 
