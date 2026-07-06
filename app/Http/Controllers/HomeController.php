@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\NewsItem;
 use App\Models\Tag;
 use App\Models\User;
 
@@ -23,6 +24,10 @@ class HomeController extends Controller
             ->latest('published_at')
             ->latest('id')
             ->take(4)
+            ->get();
+
+        $newsItems = NewsItem::orderByDesc('published_at')
+            ->take(12)
             ->get();
 
         $heroPosts = Post::with('category')
@@ -53,6 +58,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'featuredPost',
+            'newsItems',
             'heroPosts',
             'latestPosts',
             'trendingPosts',

@@ -50,6 +50,28 @@
         .newsbar-social a { color: #333; font-size: 16px; text-decoration: none; display: flex; transition: color 0.2s; }
         .newsbar-social a:hover { color: var(--indigo); }
 
+        /* LIVE WORLD NEWS TICKER */
+        .ticker { display: flex; align-items: center; padding: 26px var(--pad) 0; position: relative; z-index: 6; }
+        .ticker-badge { position: relative; width: 96px; height: 88px; background: linear-gradient(160deg, #E53935, #8E0E00); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-weight: 800; z-index: 2; flex-shrink: 0; filter: drop-shadow(0 6px 14px rgba(183,28,28,0.35)); }
+        .ticker-badge-dot { width: 7px; height: 7px; background: #fff; border-radius: 50%; margin-bottom: 6px; animation: tickerPulse 1.2s ease-in-out infinite; }
+        @keyframes tickerPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.7); } }
+        .ticker-badge-line1 { font-size: 17px; letter-spacing: 1.5px; line-height: 1.1; }
+        .ticker-badge-line2 { font-size: 9.5px; letter-spacing: 2.5px; }
+        .ticker-main { flex: 1; margin-left: -20px; min-width: 0; }
+        .ticker-headline-bar { position: relative; height: 46px; display: flex; align-items: center; padding: 0 90px 0 38px; background: linear-gradient(96deg, #8E0E00 0%, #C62828 45%, #E53935 72%, rgba(229,57,53,0) 99%); clip-path: polygon(0 0, calc(100% - 4px) 0, calc(100% - 26px) 100%, 0 100%); overflow: hidden; }
+        .ticker-slash { position: absolute; top: -4px; bottom: -4px; width: 10px; background: rgba(255,255,255,0.9); transform: skewX(-24deg); }
+        .ticker-slash-2 { width: 5px; opacity: 0.7; }
+        .ticker-headline { color: #fff; font-size: 16px; font-weight: 800; letter-spacing: 0.2px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .ticker-headline:hover { text-decoration: underline; }
+        .ticker-sub { position: relative; height: 30px; margin: 5px 60px 0 46px; background: linear-gradient(90deg, #E8E8E8, #F7F7F7 60%, rgba(247,247,247,0)); clip-path: polygon(10px 0, 100% 0, calc(100% - 14px) 100%, 0 100%); display: flex; align-items: center; overflow: hidden; }
+        .ticker-sub::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 7px; background: #B71C1C; transform: skewX(-24deg); }
+        .ticker-marquee-track { display: inline-flex; align-items: center; gap: 48px; white-space: nowrap; padding-left: 24px; animation: tickerScroll 60s linear infinite; will-change: transform; }
+        .ticker-sub:hover .ticker-marquee-track { animation-play-state: paused; }
+        @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ticker-marquee-item { font-size: 12px; color: #444; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .ticker-marquee-item:hover { color: #B71C1C; }
+        .ticker-src { color: #D32F2F; font-weight: 800; font-size: 9.5px; letter-spacing: 0.5px; text-transform: uppercase; }
+
         /* SEARCH */
         .search-trigger { background: none; border: none; padding: 4px; cursor: pointer; display: flex; align-items: center; font-size: 19px; color: #333; transition: color 0.2s; }
         .search-trigger:hover { color: var(--indigo); }
@@ -270,6 +292,13 @@
             .paper-right { order: 3; }
             .paper-feature { height: 260px; }
             .paper-feature-title { font-size: 20px; }
+            .ticker { padding-top: 16px; }
+            .ticker-badge { width: 72px; height: 66px; }
+            .ticker-badge-line1 { font-size: 13px; }
+            .ticker-headline-bar { height: 40px; padding: 0 44px 0 28px; }
+            .ticker-headline { font-size: 12.5px; }
+            .ticker-slash { display: none; }
+            .ticker-sub { margin: 4px 20px 0 34px; }
             .stats-grid { grid-template-columns: repeat(2,1fr); }
             .stories-grid { grid-template-columns: 1fr; }
             .sec-title { font-size: 26px; }
@@ -330,6 +359,33 @@
         <a href="#" aria-label="Email"><i class="ti ti-mail"></i></a>
     </div>
 </nav>
+
+{{-- LIVE WORLD NEWS TICKER --}}
+@if($newsItems->isNotEmpty())
+<div class="ticker">
+    <div class="ticker-badge">
+        <span class="ticker-badge-dot"></span>
+        <span class="ticker-badge-line1">LIVE</span>
+        <span class="ticker-badge-line2">WORLD</span>
+    </div>
+    <div class="ticker-main">
+        <div class="ticker-headline-bar">
+            <a href="{{ $newsItems[0]->url }}" target="_blank" rel="noopener" class="ticker-headline" id="tickerHeadline">{{ $newsItems[0]->title }}</a>
+            <div class="ticker-slash" style="right: 70px;"></div>
+            <div class="ticker-slash ticker-slash-2" style="right: 54px;"></div>
+        </div>
+        <div class="ticker-sub">
+            <div class="ticker-marquee-track">
+                @foreach($newsItems->concat($newsItems) as $news)
+                <a href="{{ $news->url }}" target="_blank" rel="noopener" class="ticker-marquee-item">
+                    <span class="ticker-src">{{ $news->source }}</span>{{ $news->title }}
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 {{-- HERO — NEWSPAPER FRONT PAGE --}}
 @php
@@ -707,6 +763,22 @@ window.addEventListener('scroll', () => {
 gsap.from('.paper-center', { opacity: 0, y: 24, duration: 0.7, ease: 'power3.out', delay: 0.1 });
 gsap.from('.paper-left', { opacity: 0, y: 24, duration: 0.7, ease: 'power3.out', delay: 0.25 });
 gsap.from('.paper-right', { opacity: 0, y: 24, duration: 0.7, ease: 'power3.out', delay: 0.4 });
+
+// Live world news ticker — slide in, then rotate headlines every 5s
+const tickerHeadline = document.getElementById('tickerHeadline');
+if (tickerHeadline) {
+    const tickerItems = @json($newsItems->map(fn ($n) => ['title' => $n->title, 'url' => $n->url])->values());
+    let tickerIdx = 0;
+    gsap.from('.ticker', { opacity: 0, y: -16, duration: 0.6, ease: 'power2.out' });
+    setInterval(() => {
+        gsap.to(tickerHeadline, { y: -24, opacity: 0, duration: 0.35, ease: 'power2.in', onComplete: () => {
+            tickerIdx = (tickerIdx + 1) % tickerItems.length;
+            tickerHeadline.textContent = tickerItems[tickerIdx].title;
+            tickerHeadline.href = tickerItems[tickerIdx].url;
+            gsap.fromTo(tickerHeadline, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' });
+        }});
+    }, 5000);
+}
 
 // Trust bar
 gsap.from('.trust-cat', { opacity: 0, y: 15, duration: 0.5, stagger: 0.08, ease: 'power2.out',
