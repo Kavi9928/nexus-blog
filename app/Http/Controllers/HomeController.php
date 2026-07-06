@@ -90,6 +90,14 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('posts.show', compact('post', 'relatedPosts'));
+        // Most-read sidebar list
+        $mostRead = Post::with('category')
+            ->published()
+            ->where('id', '!=', $post->id)
+            ->orderByDesc('views')
+            ->take(5)
+            ->get();
+
+        return view('posts.show', compact('post', 'relatedPosts', 'mostRead'));
     }
 }
