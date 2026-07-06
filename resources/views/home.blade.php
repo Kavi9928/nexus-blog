@@ -186,16 +186,6 @@
         .mr-date { font-size: 10.5px; color: #999; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
         .mr-excerpt { font-size: 13px; color: #555; line-height: 1.65; }
 
-        /* AUTHOR */
-        .author-card { display: flex; align-items: center; gap: 36px; max-width: 820px; margin: 0 auto; background: #fff; border: 1px solid #E5E7EB; padding: 36px; }
-        .author-av { width: 110px; height: 110px; background: #0f1115; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 800; flex-shrink: 0; }
-        .author-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #D32F2F; font-weight: 800; margin-bottom: 10px; }
-        .author-name { font-size: 28px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.5px; }
-        .author-bio { font-size: 13px; color: #777; line-height: 1.7; margin-bottom: 18px; }
-        .author-stats { display: flex; gap: 32px; }
-        .author-stat-n { font-size: 22px; font-weight: 800; color: #0f1115; }
-        .author-stat-l { font-size: 10px; color: #aaa; letter-spacing: 0.5px; text-transform: uppercase; }
-
         /* ARTICLE FILTER (LIVEWIRE) */
         .filter-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
         .filter-btn { background: #fff; border: 1px solid #E5E7EB; padding: 10px 22px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -290,8 +280,6 @@
             .sec-title { font-size: 26px; }
             .feature { grid-template-columns: 1fr; padding: 32px; margin: 0 20px 48px; }
             .trend-img, .trend-views { display: none; }
-            .author-card { flex-direction: column; text-align: center; padding: 28px; }
-            .author-stats { justify-content: center; }
             .cats-grid { grid-template-columns: 1fr; }
             .nl { padding: 36px 24px; margin: 0 20px 48px; }
             .nl-form { flex-direction: column; }
@@ -552,28 +540,6 @@
     </div>
 </div>
 
-{{-- AUTHOR --}}
-@if($topAuthor)
-<section class="sec" id="author-sec" style="padding-top:0;">
-    <div class="sec-head">
-        <div class="sec-eyebrow">MEET THE TEAM</div>
-        <div class="sec-title">Author spotlight</div>
-    </div>
-    <div class="author-card">
-        <div class="author-av">{{ strtoupper(substr($topAuthor->name, 0, 1)) }}</div>
-        <div>
-            <div class="author-label">Top Writer</div>
-            <div class="author-name">{{ $topAuthor->name }}</div>
-            <div class="author-bio">A passionate technology writer covering AI, innovation, and the future of computing. Bringing complex topics to life with clarity and depth.</div>
-            <div class="author-stats">
-                <div><div class="author-stat-n">{{ $topAuthor->posts_count }}</div><div class="author-stat-l">Articles</div></div>
-                <div><div class="author-stat-n">52K</div><div class="author-stat-l">Total Views</div></div>
-                <div><div class="author-stat-n">4.9</div><div class="author-stat-l">Rating</div></div>
-            </div>
-        </div>
-    </div>
-</section>
-@endif
 
 {{-- EXPLORE ARTICLES (LIVEWIRE FILTER) --}}
 <section class="sec" id="explore-sec" style="padding-top:0;">
@@ -805,9 +771,6 @@ gsap.set('.trend-row', { opacity: 0, y: 24 });
 ScrollTrigger.create({ trigger: '#trend-sec', start: 'top 80%',
     onEnter: () => gsap.to('.trend-row', { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }) });
 
-// Author
-gsap.from('.author-card', { opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
-    scrollTrigger: { trigger: '#author-sec', start: 'top 82%' } });
 
 // Tags
 

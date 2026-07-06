@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\NewsItem;
-use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -44,19 +43,13 @@ class HomeController extends Controller
 
         $categories = Category::withCount('posts')->get();
 
-        // Top author — user with most posts
-        $topAuthor = User::withCount('posts')
-            ->orderBy('posts_count', 'desc')
-            ->first();
-
         return view('home', compact(
             'featuredPost',
             'newsItems',
             'heroPosts',
             'latestPosts',
             'trendingPosts',
-            'categories',
-            'topAuthor'
+            'categories'
         ));
     }
 
