@@ -4,8 +4,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -75,14 +73,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Post::class);
     }
 
-    /**
-     * Both authors and admins may enter the /admin panel; readers cannot.
-     */
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return in_array($this->role, ['author', 'admin'], true);
-    }
-
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -98,14 +88,6 @@ class User extends Authenticatable implements FilamentUser
                 ? Storage::disk('public')->url($this->avatar)
                 : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0f1115&color=fff&size=200',
         );
-    }
-
-    /**
-     * Avatar shown in the Filament panel UI.
-     */
-    public function getFilamentAvatarUrl(): ?string
-    {
-        return $this->avatar ? Storage::disk('public')->url($this->avatar) : null;
     }
 
     public function getRouteKeyName(): string
