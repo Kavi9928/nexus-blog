@@ -4,11 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -20,8 +25,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'role',
+        'title',
+        'bio',
+        'avatar',
+        'twitter',
+        'linkedin',
+        'website',
     ];
 
     /**
@@ -47,9 +60,69 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if (blank($user->username)) {
+                $user->username = static::makeUsername($user->name ?: 'author');
+            }
+        });
+    }
+
     // POST
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Both authors and admins may enter the /admin panel; readers cannot.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return in_array($this->role, ['author', 'admin'], true);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Resolved public URL for the avatar (falls back to a generated initials image).
+     */
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->avatar
+                ? Storage::disk('public')->url($this->avatar)
+                : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0f1115&color=fff&size=200',
+        );
+    }
+
+    /**
+     * Avatar shown in the Filament panel UI.
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar ? Storage::disk('public')->url($this->avatar) : null;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'username';
+    }
+
+    public static function makeUsername(string $name): string
+    {
+        $base = Str::slug($name) ?: 'author';
+        $username = $base;
+        $i = 1;
+
+        while (static::where('username', $username)->exists()) {
+            $username = $base . '-' . (++$i);
+        }
+
+        return $username;
     }
 }

@@ -184,7 +184,7 @@
         <p class="article-standfirst">{{ $post->excerpt }}</p>
 
         <div class="article-byline">
-            <span class="by">By&nbsp;<strong>{{ $post->user->name }}</strong></span>
+            <span class="by">By&nbsp;<a href="{{ route('authors.show', $post->user) }}" style="color:#0f1115;font-weight:700;text-decoration:none;border-bottom:1px solid #ccc;">{{ $post->user->name }}</a></span>
             <span>Published On {{ ($post->published_at ?? $post->created_at)->format('j M Y') }}</span>
             <span><i class="ti ti-clock"></i> {{ $post->reading_time }} min read</span>
             <span><i class="ti ti-eye"></i> {{ number_format($post->views) }} views</span>

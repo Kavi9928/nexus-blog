@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\NewsItem;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -95,5 +96,22 @@ class HomeController extends Controller
             ->get();
 
         return view('posts.show', compact('post', 'relatedPosts', 'mostRead'));
+    }
+
+    public function author(User $user)
+    {
+        $posts = $user->posts()
+            ->with('category')
+            ->published()
+            ->latest('published_at')
+            ->latest('id')
+            ->paginate(9);
+
+        $stats = [
+            'articles' => $user->posts()->published()->count(),
+            'views' => (int) $user->posts()->published()->sum('views'),
+        ];
+
+        return view('authors.show', compact('user', 'posts', 'stats'));
     }
 }

@@ -12,12 +12,13 @@ class FetchWorldNews extends Command
 {
     protected $signature = 'news:fetch';
 
-    protected $description = 'Fetch the latest world news headlines from RSS feeds into the news_items table';
+    protected $description = 'Fetch the latest tech news headlines from RSS feeds into the news_items table';
 
     /** @var array<string, string> feed url => source label */
     protected array $feeds = [
-        'https://feeds.bbci.co.uk/news/world/rss.xml' => 'BBC News',
-        'https://www.aljazeera.com/xml/rss/all.xml' => 'Al Jazeera',
+        'https://techcrunch.com/feed/' => 'TechCrunch',
+        'https://www.theverge.com/rss/index.xml' => 'The Verge',
+        'https://feeds.arstechnica.com/arstechnica/index' => 'Ars Technica',
     ];
 
     public function handle(): int
@@ -38,22 +39,48 @@ class FetchWorldNews extends Command
             }
 
             $xml = @simplexml_load_string($response->body());
-            if ($xml === false || ! isset($xml->channel->item)) {
+            if ($xml === false) {
                 $this->warn("Skipping {$source}: could not parse feed");
                 continue;
             }
 
-            foreach ($xml->channel->item as $item) {
-                $link = trim((string) $item->link);
+            $isAtom = isset($xml->entry);
+            $items = $isAtom ? $xml->entry : ($xml->channel->item ?? []);
+
+            if (count($items) === 0) {
+                $this->warn("Skipping {$source}: no items found in feed");
+                continue;
+            }
+
+            foreach ($items as $item) {
                 $title = trim((string) $item->title);
+
+                if ($isAtom) {
+                    $link = '';
+                    foreach ($item->link as $linkEl) {
+                        $rel = (string) $linkEl->attributes()->rel;
+                        if ($rel === '' || $rel === 'alternate') {
+                            $link = (string) $linkEl->attributes()->href;
+                            break;
+                        }
+                    }
+                    $rawDate = (string) ($item->published ?: $item->updated);
+                    $rawSummary = (string) ($item->summary ?: $item->content);
+                } else {
+                    $link = trim((string) $item->link);
+                    $rawDate = (string) $item->pubDate;
+                    $rawSummary = (string) $item->description;
+                }
+
+                $link = trim($link);
                 if ($link === '' || $title === '') {
                     continue;
                 }
 
                 $publishedAt = null;
-                if ((string) $item->pubDate !== '') {
+                if ($rawDate !== '') {
                     try {
-                        $publishedAt = Carbon::parse((string) $item->pubDate);
+                        $publishedAt = Carbon::parse($rawDate);
                     } catch (\Throwable) {
                         // leave null if the feed sends an unparseable date
                     }
@@ -64,7 +91,7 @@ class FetchWorldNews extends Command
                     [
                         'title' => Str::limit($title, 250),
                         'source' => $source,
-                        'summary' => Str::limit(trim(strip_tags((string) $item->description)), 500) ?: null,
+                        'summary' => Str::limit(trim(strip_tags($rawSummary)), 500) ?: null,
                         'published_at' => $publishedAt,
                     ]
                 )->wasRecentlyCreated;
